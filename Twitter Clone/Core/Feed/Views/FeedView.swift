@@ -8,8 +8,32 @@
 import SwiftUI
 
 struct FeedView: View {
+	
+	@ObservedObject private var feedViewModel = FeedViewModel()
+	
+	@State private var showNewTweetView = false
+	
     var body: some View {
-		TweetsView(filter: "feed")
+		ZStack(alignment: .bottomTrailing) {
+			TweetsView(feedViewModel.tweets)
+			Button {
+				showNewTweetView.toggle()
+			} label: {
+				Image(systemName: "text.quote")
+					.font(.title)
+					.padding()
+			}
+			.background(Color.blue)
+			.foregroundColor(.white)
+			.clipShape(Circle())
+			.padding()
+		}
+		.sheet(isPresented: $showNewTweetView) {
+			feedViewModel.fetchTweets()
+		} content: {
+			NewTweetView()
+		}
+
     }
 }
 

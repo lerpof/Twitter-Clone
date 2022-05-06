@@ -19,4 +19,5 @@ enum TweetFilterViewModel: Int, CaseIterable {
 		case .likes: return "Likes"
 		}
 	}
+
 }

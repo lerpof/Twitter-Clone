@@ -6,11 +6,21 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ProfileView: View {
 	
+	@ObservedObject private var profileViewModel: ProfileViewModel
 	@State private var selectedTab: TweetFilterViewModel = .tweets
+	@Environment(\.presentationMode) var presentationMode
 	@Namespace var animation
+	
+	private let user: User
+	
+	init(user: User) {
+		self.user = user
+		profileViewModel = ProfileViewModel(user: user)
+	}
 	
     var body: some View {
 		VStack(alignment: .leading) {
@@ -23,10 +33,11 @@ struct ProfileView: View {
 			
 			tweetFilterTabs
 			
-			TweetsView(filter: selectedTab.title)
+			TweetsView(profileViewModel.tweets)
 			
 			Spacer()
 		}
+		.navigationBarHidden(true)
     }
 }
 
@@ -39,21 +50,24 @@ extension ProfileView {
 			VStack {
 				Spacer()
 				Button {
-					debugPrint("go back")
+					presentationMode.wrappedValue.dismiss()
 				} label: {
 					Image(systemName: "arrow.left")
 				}
 				.foregroundColor(.white)
 				.font(.title2)
 				Spacer()
-				Circle()
-					.frame(width: 60, height: 60)
+				UserProfileImageView(url: user.profileImageURL)
+					.frame(width: 75, height: 75)
 					.offset(x: 10, y: 25)
+					
 			}
 			.padding(.leading, 6)
 		}
 		.ignoresSafeArea()
-		.frame(height: 150)
+		.propotionalFrame(width: 1, height: 0.18)
+		
+		
 	}
 	
 	var editProfileButtons: some View {
@@ -65,7 +79,7 @@ extension ProfileView {
 				ZStack {
 					Image(systemName: "bell.badge")
 						.font(.title2)
-						.foregroundColor(.black)
+						.foregroundColor(.primary)
 					Circle()
 						.stroke()
 						.foregroundColor(.gray)
@@ -80,7 +94,7 @@ extension ProfileView {
 					Text("Edit Profile")
 						.fontWeight(.bold)
 						.font(.system(size: 14))
-						.foregroundColor(.black)
+						.foregroundColor(.primary)
 					RoundedRectangle(cornerRadius: 22)
 						.stroke()
 						.foregroundColor(.gray)
@@ -96,13 +110,13 @@ extension ProfileView {
 		VStack(alignment: .leading, spacing: 16) {
 			VStack(alignment: .leading) {
 				HStack {
-					Text("Bruce Wayne")
+					Text(user.fullname)
 						.font(.title2)
 						.fontWeight(.bold)
 					Image(systemName: "checkmark.seal.fill")
 						.foregroundColor(.blue)
 				}
-				Text("@batman")
+				Text("@\(user.username)")
 					.font(.caption)
 					.foregroundColor(.gray)
 			}
@@ -119,22 +133,7 @@ extension ProfileView {
 						.font(.caption)
 				}
 			}
-			HStack {
-				HStack {
-					Text("2")
-						.fontWeight(.bold)
-					Text("Following")
-						.foregroundColor(.gray)
-						.font(.system(size: 14))
-				}
-				HStack {
-					Text("4")
-						.fontWeight(.bold)
-					Text("Followers")
-						.foregroundColor(.gray)
-						.font(.system(size: 14))
-				}
-			}
+			ProfileFollowView()
 		}
 		.padding(.horizontal)
 	}
@@ -147,7 +146,7 @@ extension ProfileView {
 					Text(item.title)
 						.font(.subheadline)
 						.fontWeight(isSelected ? .semibold : .regular)
-						.foregroundColor(isSelected ? .black : .gray)
+						.foregroundColor(isSelected ? .primary : .gray)
 					if isSelected {
 						Capsule()
 							.foregroundColor(.blue)
@@ -164,6 +163,7 @@ extension ProfileView {
 				.onTapGesture {
 					withAnimation(.easeInOut) {
 						self.selectedTab = item
+						self.profileViewModel.fetchTweets(tweetFilter: item)
 					}
 				}
 			}
@@ -175,15 +175,4 @@ extension ProfileView {
 		.padding(.top)
 	}
 	
-}
-
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-		ProfileView()
-			.previewDevice(PreviewDevice(rawValue: "iPhone 13"))
-			.previewDisplayName("iPhone 13")
-//		ProfileView()
-//			.previewDevice(PreviewDevice(rawValue: "iPhone 8"))
-//			.previewDisplayName("iPhone 8")
-    }
 }

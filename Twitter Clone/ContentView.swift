@@ -8,9 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
+	// usable in whole environment
+	@EnvironmentObject var viewModel: AuthViewModel
+	
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+		Group {
+			if viewModel.userSession == nil{
+				NavigationView {
+					LoginView()
+						.navigationBarHidden(true)
+						.navigationBarTitle(Text("Home"))
+				}
+			} else {
+				MainTabView()
+			}
+		}
     }
 }
 
