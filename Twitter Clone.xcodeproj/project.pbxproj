@@ -386,14 +386,14 @@
 				828A934C2815F17D0065F0FE /* Components */,
 				82BAA81E281742790066DCE5 /* Authentication */,
 				82BAA81728173B9B0066DCE5 /* CreateTweet */,
-				822F236C2816DC500041D076 /* SideMenu */,
-				828A93602815FC620065F0FE /* Profile */,
-				828A93592815FAFB0065F0FE /* Messages */,
-				828A93582815FAF40065F0FE /* Notifications */,
-				828563AC28255AC700EF9CE6 /* Tweet */,
 				828A93572815FAEC0065F0FE /* Explore */,
 				828A934D2815F1860065F0FE /* Feed */,
 				828A93542815FA490065F0FE /* MainTab */,
+				828A93592815FAFB0065F0FE /* Messages */,
+				828A93582815FAF40065F0FE /* Notifications */,
+				828A93602815FC620065F0FE /* Profile */,
+				822F236C2816DC500041D076 /* SideMenu */,
+				828563AC28255AC700EF9CE6 /* Tweet */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -431,16 +431,16 @@
 		828A934C2815F17D0065F0FE /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				82557E9E2829699E006DA0E9 /* Messages */,
+				82174E4E2827143600F30F1C /* RoundedShape.swift */,
+				82AA19842824FF81000A2A16 /* SideBarStack.swift */,
+				82C100C0281816690030DF3F /* Authentication */,
 				82174E4928270F4600F30F1C /* Buttons */,
+				82557E9E2829699E006DA0E9 /* Messages */,
 				82174E4828270F2F00F30F1C /* NavigationBar */,
 				8220189628193B71006CC79F /* Profile */,
-				82C100C0281816690030DF3F /* Authentication */,
 				82C100BB2817F3FD0030DF3F /* TextField */,
-				822F23692816D8D80041D076 /* Users */,
 				822F23682816D8CE0041D076 /* Tweets */,
-				82AA19842824FF81000A2A16 /* SideBarStack.swift */,
-				82174E4E2827143600F30F1C /* RoundedShape.swift */,
+				822F23692816D8D80041D076 /* Users */,
 			);
 			path = Components;
 			sourceTree = "<group>";

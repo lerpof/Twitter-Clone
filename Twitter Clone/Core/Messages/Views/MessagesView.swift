@@ -15,7 +15,7 @@ struct MessagesView: View {
 		ScrollView {
 			LazyVStack {
 				ForEach(messageViewModel.chats) { chat in
-					ChatRowView()
+					ChatRowView(chat: chat)
 					Divider()
 				}
 			}

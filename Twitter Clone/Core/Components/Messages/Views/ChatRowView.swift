@@ -11,7 +11,7 @@ struct ChatRowView: View {
 	
 	@State var showChatView: Bool = false
 	
-	//let chat: Chat
+	let chat: Chat
 	
     var body: some View {
 		NavigationButton(showNextView: $showChatView) {
@@ -21,15 +21,15 @@ struct ChatRowView: View {
 				
 				VStack(alignment: .leading) {
 					HStack {
-						Text("Leonardo Lazzari")
+						Text(chat.recipient!.fullname)
 							.fontWeight(.bold)
 							.font(.subheadline)
-						Text("@lerpof • 1w")
+						Text("@\(chat.recipient!.username) • 1w")
 							.font(.caption)
 							.foregroundColor(.gray)
 					}
 					
-					Text("I have something to say to you, you can't whatever you want and pretend to be with me, you stupid idiot.")
+					Text(chat.messages?.last?.body ?? "")
 						.truncationMode(.tail)
 						.lineLimit(2)
 						.multilineTextAlignment(.leading)
@@ -41,7 +41,7 @@ struct ChatRowView: View {
 			}
 			.padding(.horizontal)
 		} destination: {
-			Text("CHAT")
+			ChatView(with: chat.recipient!)
 			//ChatView(chat: chat)
 		}
 

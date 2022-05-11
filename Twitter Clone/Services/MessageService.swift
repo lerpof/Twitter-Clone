@@ -16,7 +16,7 @@ class MessageService {
 	func fetchChats(completion: @escaping ([Chat]) -> ()) {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
 		
-		collectionRef.whereField("partecipants", arrayContains: uid).getDocuments { snapshot, error in
+		collectionRef.whereField("participants", arrayContains: uid).getDocuments { snapshot, error in
 			guard let documents = snapshot?.documents else {
 				print("Error fetch chats: \(error?.localizedDescription ?? "No error")")
 				return
