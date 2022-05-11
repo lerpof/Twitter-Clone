@@ -2,14 +2,24 @@
 //  MessagesView.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 24/04/22.
+//  Created by CGMCONSULTING on 09/05/22.
 //
 
 import SwiftUI
 
 struct MessagesView: View {
+	
+	@ObservedObject var messageViewModel = MessagesViewModel()
+	
     var body: some View {
-        Text("messages view")
+		ScrollView {
+			LazyVStack {
+				ForEach(messageViewModel.chats) { chat in
+					ChatRowView()
+					Divider()
+				}
+			}
+		}
     }
 }
 

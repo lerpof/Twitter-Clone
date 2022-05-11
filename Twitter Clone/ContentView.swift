@@ -14,11 +14,7 @@ struct ContentView: View {
     var body: some View {
 		Group {
 			if viewModel.userSession == nil{
-				NavigationView {
-					LoginView()
-						.navigationBarHidden(true)
-						.navigationBarTitle(Text("Home"))
-				}
+				LoginView()
 			} else {
 				MainTabView()
 			}

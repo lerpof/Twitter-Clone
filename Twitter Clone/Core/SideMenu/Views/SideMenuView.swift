@@ -10,6 +10,7 @@ import SwiftUI
 struct SideMenuView: View {
 	
 	@EnvironmentObject var viewModel: AuthViewModel
+	@State var showProfileView: Bool = false
 	
 	var body: some View {
 		if let user = viewModel.currentUser {
@@ -26,11 +27,11 @@ struct SideMenuView: View {
 					.padding(.vertical)
 				ForEach(SideMenuViewModel.allCases, id: \.rawValue) { sideMenuOption in
 					if sideMenuOption == .profile {
-						NavigationLink {
-							ProfileView(user: user)
-								.navigationBarHidden(true)
-						} label: {
+						NavigationButton(showNextView: $showProfileView) {
 							SideMenuRowView(viewModel: sideMenuOption)
+						} destination: {
+							ProfileView(user: user)
+
 						}
 					} else if sideMenuOption == .logout {
 						Button {

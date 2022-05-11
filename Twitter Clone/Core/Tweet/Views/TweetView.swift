@@ -10,6 +10,8 @@ import Firebase
 
 struct TweetView: View {
 	
+	@Environment(\.presentationMode) var presentationMode
+	
 	private var tweet: Tweet
 	
 	init(_ tweet: Tweet) {
@@ -17,34 +19,39 @@ struct TweetView: View {
 	}
 	
     var body: some View {
-		ScrollView {
-			VStack(alignment: .leading) {
-				if let user = tweet.user {
-					HStack(alignment: .top) {
-						UserProfileImageView(url: user.profileImageURL)
-							.frame(width: 50, height: 50)
-						VStack(alignment: .leading) {
-							HStack {
-								Text(user.fullname)
-									.font(.headline)
-								Image(systemName: "checkmark.seal.fill")
-									.font(.subheadline)
+		VStack {
+			NavBarWithBack {
+				Text("Tweet")
+			}
+			ScrollView {
+				VStack(alignment: .leading) {
+					if let user = tweet.user {
+						HStack(alignment: .top) {
+							UserProfileImageView(url: user.profileImageURL)
+								.frame(width: 50, height: 50)
+							VStack(alignment: .leading) {
+								HStack {
+									Text(user.fullname)
+										.font(.headline)
+									Image(systemName: "checkmark.seal.fill")
+										.font(.subheadline)
+								}
+								Text("@\(user.username)")
+									.font(.caption)
 							}
-							Text("@\(user.username)")
-								.font(.caption)
+							Spacer()
 						}
+						Text(tweet.caption)
+							.multilineTextAlignment(.leading)
+							.font(.body)
+							.padding(.vertical)
+						TweetInteractionButtons(tweet)
+							.padding(.horizontal)
 						Spacer()
 					}
-					Text(tweet.caption)
-						.multilineTextAlignment(.leading)
-						.font(.body)
-						.padding(.vertical)
-					TweetInteractionButtons(tweet)
-						.padding(.horizontal)
-					Spacer()
 				}
+				.padding(.horizontal, 16)
 			}
-			.padding(.horizontal, 16)
 		}
     }
 }

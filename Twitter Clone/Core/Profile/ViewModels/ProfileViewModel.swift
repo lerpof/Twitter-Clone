@@ -12,6 +12,7 @@ class ProfileViewModel: ObservableObject {
 	@Published var tweets: [Tweet] = []
 	private let tweetService = TweetService()
 	private let userService = UserService()
+	private let messageService = MessageService()
 	private let user: User
 	
 	init(user: User) {

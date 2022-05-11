@@ -12,6 +12,8 @@ struct LoginView: View {
 	@State private var password: String = ""
 	@EnvironmentObject var viewModel: AuthViewModel
 	
+	@State private var showSignup: Bool = false
+	
     var body: some View {
 		VStack(alignment: .leading) {
 			
@@ -44,10 +46,7 @@ struct LoginView: View {
 				
 				Spacer()
 				
-				NavigationLink {
-					SignupView()
-						.navigationBarHidden(true)
-				} label: {
+				NavigationButton(showNextView: $showSignup) {
 					HStack {
 						Text("Don't have an account?")
 						Text("Sign Up")
@@ -55,9 +54,9 @@ struct LoginView: View {
 					}
 					.font(.callout)
 					.padding(.bottom, 30)
+				} destination: {
+					SignupView()
 				}
-
-
 			}
 			.padding(.horizontal, 30)
 			

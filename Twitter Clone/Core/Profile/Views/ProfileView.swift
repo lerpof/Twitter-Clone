@@ -12,10 +12,16 @@ struct ProfileView: View {
 	
 	@ObservedObject private var profileViewModel: ProfileViewModel
 	@State private var selectedTab: TweetFilterViewModel = .tweets
+	@State private var presentChat: Bool = false
 	@Environment(\.presentationMode) var presentationMode
+	@EnvironmentObject var viewModel: AuthViewModel
 	@Namespace var animation
 	
 	private let user: User
+	
+	private var isMyProfile: Bool {
+		self.user.email == viewModel.currentUser?.email
+	}
 	
 	init(user: User) {
 		self.user = user
@@ -27,7 +33,7 @@ struct ProfileView: View {
 			
 			profileImagesWithBack
 			
-			editProfileButtons
+			profileButtons
 			
 			userInfo
 			
@@ -70,7 +76,7 @@ extension ProfileView {
 		
 	}
 	
-	var editProfileButtons: some View {
+	var profileButtons: some View {
 		HStack {
 			Spacer()
 			Button {
@@ -87,11 +93,9 @@ extension ProfileView {
 			}
 			.frame(width: 35)
 			
-			Button {
-				
-			} label: {
+			NavigationButton(showNextView: $presentChat) {
 				ZStack {
-					Text("Edit Profile")
+					Text(isMyProfile ? "Edit Profile" : "Message")
 						.fontWeight(.bold)
 						.font(.system(size: 14))
 						.foregroundColor(.primary)
@@ -99,8 +103,10 @@ extension ProfileView {
 						.stroke()
 						.foregroundColor(.gray)
 				}
+				.frame(width: 110)
+			} destination: {
+				ChatView(with: user)
 			}
-			.frame(width: 110)
 		}
 		.frame(height: 30)
 		.padding(.trailing)

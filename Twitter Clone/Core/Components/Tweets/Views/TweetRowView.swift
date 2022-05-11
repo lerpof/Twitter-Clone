@@ -11,7 +11,12 @@ struct TweetRowView: View {
 	
 	private let tweet: Tweet
 	
+	@State private var showProfileView: Bool = false
+	@State private var showTweetView: Bool = false
+	
 	@ObservedObject private var tweetRowViewModel: TweetRowViewModel
+	
+	
 	
 	init(_ tweet: Tweet, isRow: Bool = true) {
 		self.tweet = tweet
@@ -22,17 +27,14 @@ struct TweetRowView: View {
 		if let user = tweet.user {
 			VStack(alignment: .leading, spacing: 30){
 				HStack(alignment: .top, spacing: 12) {
-					NavigationLink {
-						ProfileView(user: user)
-							.navigationBarHidden(true)
-					} label: {
+					NavigationButton(showNextView: $showProfileView) {
 						UserProfileImageView(url: user.profileImageURL)
 							.frame(width: 46, height: 46)
+					} destination: {
+						ProfileView(user: user)
 					}
-					NavigationLink {
-						TweetView(tweet)
-							.navigationBarHidden(true)
-					} label: {
+					
+					NavigationButton(showNextView: $showTweetView) {
 						VStack(alignment: .leading) {
 							HStack {
 								Text(user.fullname)
@@ -46,8 +48,10 @@ struct TweetRowView: View {
 								.multilineTextAlignment(.leading)
 								.font(.body)
 						}
+						.foregroundColor(.primary)
+					} destination: {
+						TweetView(tweet)
 					}
-					.foregroundColor(.primary)
 					// TODO: fix week counter
 					
 				}

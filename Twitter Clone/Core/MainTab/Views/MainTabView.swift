@@ -19,46 +19,21 @@ struct MainTabView: View {
 	
 	var body: some View {
 		if let user = viewModel.currentUser {
-			NavigationView {
-				SideBarStack(sidebarWidth: sideMenuWidth, offset: $offset) {
-					SideMenuView()
-						.navigationBarHidden(true)
-						.navigationBarTitle(Text("Home"))
-				} content: {
-					NavigationView {
-						TabView(selection: $selectedIndex) {
-							ForEach(MainTabViewModels.allCases, id: \.rawValue) { mainTabOption in
-								mainTabOption.view
-									.onTapGesture {
-										self.selectedIndex = mainTabOption
-									}
-									.tabItem {
-										Image(systemName: mainTabOption.imageName)
-									}
-									.tag(mainTabOption)
-							}
-						}
-						.navigationBarTitleDisplayMode(.inline)
-						.navigationViewStyle(.stack)
-						.toolbar {
-							ToolbarItem(placement: .navigationBarLeading) {
-								Button {
-									withAnimation {
-										offset = sideMenuWidth
-									}
-								} label: {
-									UserProfileImageView(url: user.profileImageURL)
-										.frame(width: 40, height: 40)
+			SideBarStack(sidebarWidth: sideMenuWidth, offset: $offset) {
+				SideMenuView()
+			} content: {
+				VStack {
+					MainNavigationBar(offset: $offset, sideMenuWidth: sideMenuWidth)
+					TabView(selection: $selectedIndex) {
+						ForEach(MainTabViewModels.allCases, id: \.rawValue) { mainTabOption in
+							mainTabOption.view
+								.onTapGesture {
+									self.selectedIndex = mainTabOption
 								}
-
-							}
-							ToolbarItem(placement: .principal) {
-								Image("icon")
-									.renderingMode(.template)
-									.resizable()
-									.frame(width: 40, height: 40)
-									.foregroundColor(.primary)
-							}
+								.tabItem {
+									Image(systemName: mainTabOption.imageName)
+								}
+								.tag(mainTabOption)
 						}
 					}
 				}
