@@ -30,6 +30,7 @@ struct NavigationButton<ButtonLabel: View, Destination: View>: View {
 		} label: {
 			buttonLabel()
 		}
+		.navigationViewStyle(DefaultNavigationViewStyle())
 		.fullScreenCover(isPresented: $showNextView, onDismiss: onDismiss, content: destination)
 	}
 }

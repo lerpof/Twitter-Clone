@@ -10,7 +10,7 @@ import SwiftUI
 struct SideMenuView: View {
 	
 	@EnvironmentObject var viewModel: AuthViewModel
-	@State var showProfileView: Bool = false
+	@Binding var showProfileView: Bool
 	
 	var body: some View {
 		if let user = viewModel.currentUser {
@@ -27,11 +27,10 @@ struct SideMenuView: View {
 					.padding(.vertical)
 				ForEach(SideMenuViewModel.allCases, id: \.rawValue) { sideMenuOption in
 					if sideMenuOption == .profile {
-						NavigationButton(showNextView: $showProfileView) {
+						Button {
+							showProfileView.toggle()
+						} label: {
 							SideMenuRowView(viewModel: sideMenuOption)
-						} destination: {
-							ProfileView(user: user)
-
 						}
 					} else if sideMenuOption == .logout {
 						Button {
@@ -56,8 +55,3 @@ struct SideMenuView: View {
 	}
 }
 
-struct SideMenuView_Previews: PreviewProvider {
-	static var previews: some View {
-		SideMenuView()
-	}
-}

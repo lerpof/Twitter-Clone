@@ -46,7 +46,10 @@ struct LoginView: View {
 				
 				Spacer()
 				
-				NavigationButton(showNextView: $showSignup) {
+				NavigationLink {
+					SignupView()
+						.navigationBarHidden(true)
+				} label: {
 					HStack {
 						Text("Don't have an account?")
 						Text("Sign Up")
@@ -54,9 +57,20 @@ struct LoginView: View {
 					}
 					.font(.callout)
 					.padding(.bottom, 30)
-				} destination: {
-					SignupView()
 				}
+
+				
+//				NavigationButton(showNextView: $showSignup) {
+//					HStack {
+//						Text("Don't have an account?")
+//						Text("Sign Up")
+//							.fontWeight(.semibold)
+//					}
+//					.font(.callout)
+//					.padding(.bottom, 30)
+//				} destination: {
+//					SignupView()
+//				}
 			}
 			.padding(.horizontal, 30)
 			
@@ -64,6 +78,7 @@ struct LoginView: View {
 			
 			
 		}
+		.navigationBarHidden(true)
     }
 }
 
