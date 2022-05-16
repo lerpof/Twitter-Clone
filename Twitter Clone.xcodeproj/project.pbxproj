@@ -56,6 +56,7 @@
 		828A935F2815FB6F0065F0FE /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828A935E2815FB6F0065F0FE /* ChatView.swift */; };
 		828A93642815FC900065F0FE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828A93632815FC900065F0FE /* ProfileView.swift */; };
 		829A264E282807F300867995 /* ChatRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829A264D282807F300867995 /* ChatRowView.swift */; };
+		829F0167282D4BC900833745 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829F0166282D4BC900833745 /* DateExtension.swift */; };
 		82A5B758281FC99F0037F13A /* TweetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A5B757281FC99F0037F13A /* TweetService.swift */; };
 		82A5B75A281FCA670037F13A /* NewTweetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A5B759281FCA670037F13A /* NewTweetViewModel.swift */; };
 		82A5B75C281FD07C0037F13A /* Tweet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A5B75B281FD07C0037F13A /* Tweet.swift */; };
@@ -119,6 +120,7 @@
 		828A935E2815FB6F0065F0FE /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		828A93632815FC900065F0FE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		829A264D282807F300867995 /* ChatRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRowView.swift; sourceTree = "<group>"; };
+		829F0166282D4BC900833745 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		82A5B757281FC99F0037F13A /* TweetService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweetService.swift; sourceTree = "<group>"; };
 		82A5B759281FCA670037F13A /* NewTweetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTweetViewModel.swift; sourceTree = "<group>"; };
 		82A5B75B281FD07C0037F13A /* Tweet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tweet.swift; sourceTree = "<group>"; };
@@ -156,18 +158,9 @@
 			isa = PBXGroup;
 			children = (
 				829A264D282807F300867995 /* ChatRowView.swift */,
-				828A935E2815FB6F0065F0FE /* ChatView.swift */,
 				82557E9F282969F3006DA0E9 /* SingleMessageView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		820759C5282A78B60052E852 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				820759C6282A78D20052E852 /* ChatViewModel.swift */,
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		82174E4828270F2F00F30F1C /* NavigationBar */ = {
@@ -285,6 +278,7 @@
 		82557E9A282967F3006DA0E9 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				828A935E2815FB6F0065F0FE /* ChatView.swift */,
 				82557E9C28296894006DA0E9 /* MessagesView.swift */,
 			);
 			path = Views;
@@ -293,6 +287,7 @@
 		82557E9B282967FC006DA0E9 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				820759C6282A78D20052E852 /* ChatViewModel.swift */,
 				820759C8282A7D2A0052E852 /* MessagesViewModel.swift */,
 			);
 			path = ViewModels;
@@ -301,7 +296,6 @@
 		82557E9E2829699E006DA0E9 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				820759C5282A78B60052E852 /* ViewModels */,
 				820759C4282A78AD0052E852 /* Views */,
 			);
 			path = Messages;
@@ -424,6 +418,7 @@
 			isa = PBXGroup;
 			children = (
 				82B6391628187C3700BB66C5 /* ViewExtension.swift */,
+				829F0166282D4BC900833745 /* DateExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -732,6 +727,7 @@
 				820759CB282A9A7E0052E852 /* Chat.swift in Sources */,
 				82A5B760281FE5B10037F13A /* ProfileViewModel.swift in Sources */,
 				82174E4F2827143600F30F1C /* RoundedShape.swift in Sources */,
+				829F0167282D4BC900833745 /* DateExtension.swift in Sources */,
 				828563B028255B0C00EF9CE6 /* TweetView.swift in Sources */,
 				828A93512815F1EB0065F0FE /* FeedView.swift in Sources */,
 				82D691C828196ED10043B3DB /* SignupView.swift in Sources */,
@@ -886,6 +882,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Twitter Clone/Preview Content\"";
+				DEVELOPMENT_TEAM = TBF67HVY8N;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -915,6 +912,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Twitter Clone/Preview Content\"";
+				DEVELOPMENT_TEAM = TBF67HVY8N;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

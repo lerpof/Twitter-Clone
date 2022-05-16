@@ -2,7 +2,7 @@
 //  ImageUploader.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 28/04/22.
+//  Created by Leonardo Lazzari on 28/04/22.
 //
 
 import Firebase

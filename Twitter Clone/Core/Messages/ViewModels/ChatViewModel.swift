@@ -2,7 +2,7 @@
 //  ChatViewModel.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 10/05/22.
+//  Created by Leonardo Lazzari on 10/05/22.
 //
 
 import Foundation
@@ -10,6 +10,7 @@ import Foundation
 class ChatViewModel: ObservableObject {
 	
 	@Published var chat: Chat?
+	@Published var messageText: String = ""
 	
 	let userService = UserService()
 	let messageService = MessageService()
@@ -23,13 +24,15 @@ class ChatViewModel: ObservableObject {
 			self.chat = chat
 			self.chat!.recipient = user
 			self.messageService.addListener(to: self.chat!) { message in
-				self.chat!.messages.append(message)
+				self.chat!.messages.insert(message, at: 0)
 			}
 		}
 	}
 	
-	func sendMessage(with body: String) {
-		messageService.sendMessage(in: chat!, with: body)
+	func sendMessage(with body: String, completion: @escaping (Bool) -> ()) {
+		messageService.sendMessage(in: chat!, with: body) { successfullySent in
+			completion(successfullySent)
+		}
 	}
 	
 }

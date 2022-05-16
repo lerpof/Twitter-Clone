@@ -2,7 +2,7 @@
 //  MessagesView.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 24/04/22.
+//  Created by Leonardo Lazzari on 24/04/22.
 //
 
 import SwiftUI
@@ -53,7 +53,11 @@ struct ChatView: View {
 									text: $message,
 									isSecureInput: false)
 					Button {
-						chatViewModel.sendMessage(with: message)
+						chatViewModel.sendMessage(with: message) { successfullySent in
+							if successfullySent {
+								self.message = ""
+							}
+						}
 					} label: {
 						Image(systemName: "paperplane.fill")
 							.resizable()

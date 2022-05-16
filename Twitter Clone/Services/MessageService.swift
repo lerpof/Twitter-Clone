@@ -2,16 +2,18 @@
 //  MessageService.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 10/05/22.
+//  Created by Leonardo Lazzari on 10/05/22.
 //
 
 import Firebase
+import FirebaseFirestoreSwift
 
 class MessageService {
 	
 	var collectionRef = Firestore.firestore().collection("chat")
 	
 	private var messageListener: ListenerRegistration?
+	private var chatListener: ListenerRegistration?
 	
 	func fetchChats(completion: @escaping ([Chat]) -> ()) {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -23,30 +25,21 @@ class MessageService {
 			}
 			var chats: [Chat] = []
 			for document in documents {
-				var chat = try! document.data(as: Chat.self)
-				self.fetchMessages(from: chat) { messages in
-					chat.messages = messages
-				}
+				let chat = try! document.data(as: Chat.self)
 				chats.append(chat)
 			}
 			completion(chats)
 		}
 	}
 	
-	private func fetchMessages(from chat: Chat, completion: @escaping ([Message]) -> ()) {
+	func fetchMessage(from chat: Chat, with id: String, completion: @escaping (Message) -> ()) {
 		collectionRef.document(chat.id!).collection("messages")
-			.getDocuments(completion: { snapshot, error in
-				guard let documents = snapshot?.documents else {
-					print("Error fetch messages: \(error?.localizedDescription ?? "No error")")
-					return
-				}
-				var messages: [Message] = []
-				for document in documents {
+			.document(id).getDocument { document, error in
+				if let document = document, document.exists {
 					let message = try! document.data(as: Message.self)
-					messages.append(message)
+					completion(message)
 				}
-				completion(messages)
-			})
+			}
 	}
 	
 	func createChat(with recipient: User, completion: @escaping (Chat) -> ()) {
@@ -64,11 +57,13 @@ class MessageService {
 							return
 						}
 					}
-					let data: [String: [String]] = ["participants": [uid, recipient.id!]]
+					let participants = [uid, recipient.id!]
+					let data: [String: Any] = ["participants": participants,
+											   "lastMessageID": ""]
 					let docRef = self.collectionRef.document()
 					docRef.setData(data)
 					docRef.collection("messages")
-					let chat = Chat(id: docRef.documentID, participants: data["participants"]!, messages: [])
+					let chat = Chat(id: docRef.documentID, participants: participants, lastMessageID: "", messages: [])
 					completion(chat)
 				}
 				
@@ -77,7 +72,7 @@ class MessageService {
 	
 	
 	
-	func sendMessage(in chat: Chat, with body: String) {
+	func sendMessage(in chat: Chat, with body: String, completion: @escaping (Bool) -> ()) {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
 		
 		let data: [String: Any] = ["body": body,
@@ -85,14 +80,31 @@ class MessageService {
 								   "recipient": chat.recipient!.id!,
 								   "timestamp": Timestamp(date: Date())]
 		
-		collectionRef.document(chat.id!).collection("messages").addDocument(data: data)
+		var docRef: DocumentReference?
+		docRef = collectionRef.document(chat.id!).collection("messages")
+			.addDocument(data: data) { error in
+				if let error = error {
+					print("DEBUG: error adding message: \(error.localizedDescription)")
+					return
+				}
+				self.collectionRef.document(chat.id!)
+					.updateData(["lastMessageID": docRef!.documentID]) { error in
+						if let error = error {
+							print("DEBUG: error adding message \(error.localizedDescription)")
+							completion(false)
+							return
+						}
+						completion(true)
+					}
+		}
+		
 	}
 	
 	func addListener(to chat: Chat,
 					 addCompletion: @escaping (Message) -> (Void)) {
 		messageListener = collectionRef.document(chat.id!).collection("messages").addSnapshotListener({ snapshot, error in
 			guard let snapshot = snapshot else {
-				print("Error listening for update: \(error?.localizedDescription ?? "No error")")
+				print("Error listening messages for update: \(error?.localizedDescription ?? "No error")")
 				return
 			}
 			snapshot.documentChanges.forEach { change in
@@ -101,6 +113,49 @@ class MessageService {
 		})
 	}
 	
+	func addListenerToChats(addCompletion: @escaping (Chat) -> (),
+							updateCompletion: @escaping (Chat) -> ()) {
+		guard let uid = Auth.auth().currentUser?.uid else { return }
+		
+		chatListener = collectionRef.whereField("participants", arrayContains: uid)
+			.addSnapshotListener({ snapshot, error in
+			guard let snapshot = snapshot else {
+				print("Error listening chats for update: \(error?.localizedDescription ?? "No error")")
+				return
+			}
+			snapshot.documentChanges.forEach { change in
+				self.handleChatChange(change,
+									  addCompletion,
+									  updateCompletion)
+			}
+		})
+	}
+	
+}
+
+// MARK: - Extension for helper functions
+extension MessageService {
+	
+	private func handleChatChange(_ change: DocumentChange,
+								  _ addCompletion: @escaping (Chat) -> (),
+								  _ updateCompletion: @escaping (Chat) -> ()) {
+		guard let chat = try? change.document.data(as: Chat.self) else {
+			return
+		}
+		switch change.type {
+		case .added:
+			addCompletion(chat)
+		case .modified:
+			updateCompletion(chat)
+		default:
+			break
+		}
+	}
+	
+	/// Function that handle the change on document calling the right  completion.
+	/// - Parameters:
+	///   - change: change that affect the document
+	///   - addCompletion: completion for add changing on document
 	private func handleDocumentChange(_ change: DocumentChange,
 									  addCompletion: @escaping (Message) -> ()) {
 		guard let message = try? change.document.data(as: Message.self) else {
@@ -113,5 +168,4 @@ class MessageService {
 			break
 		}
 	}
-	
 }

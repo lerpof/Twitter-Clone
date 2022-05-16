@@ -2,7 +2,7 @@
 //  MainTabView.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 24/04/22.
+//  Created by Leonardo Lazzari on 24/04/22.
 //
 
 import SwiftUI

@@ -2,7 +2,7 @@
 //  Message.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 10/05/22.
+//  Created by Leonardo Lazzari on 10/05/22.
 //
 
 import FirebaseFirestoreSwift

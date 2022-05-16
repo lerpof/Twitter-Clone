@@ -2,7 +2,7 @@
 //  FeedViewModel.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 02/05/22.
+//  Created by Leonardo Lazzari on 02/05/22.
 //
 
 import Foundation

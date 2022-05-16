@@ -2,7 +2,7 @@
 //  TweetView.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 06/05/22.
+//  Created by Leonardo Lazzari on 06/05/22.
 //
 
 import SwiftUI

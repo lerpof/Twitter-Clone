@@ -2,7 +2,7 @@
 //  AuthenticationHeaderView.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 26/04/22.
+//  Created by Leonardo Lazzari on 26/04/22.
 //
 
 import SwiftUI

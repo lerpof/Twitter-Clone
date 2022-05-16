@@ -2,7 +2,7 @@
 //  UserService.swift
 //  Twitter Clone
 //
-//  Created by CGMCONSULTING on 29/04/22.
+//  Created by Leonardo Lazzari on 29/04/22.
 //
 
 import Firebase
