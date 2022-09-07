@@ -34,7 +34,12 @@ class AuthViewModel: ObservableObject {
 		}
 	}
 	
-	func register(withEmail email: String, password: String, fullname: String, username: String, image: UIImage) {
+	func register(withEmail email: String,
+                  password: String,
+                  fullname: String,
+                  username: String,
+                  birthDate: Date,
+                  image: UIImage) {
 		Auth.auth().createUser(withEmail: email, password: password) { result, error in
 			if let error = error {
 				print("DEBUG: Failed to register with error \(error.localizedDescription)")
@@ -44,11 +49,16 @@ class AuthViewModel: ObservableObject {
 				return
 			}
 			
-			ImageUploader.uploadImage(image: image) { profileImageURL in
+            ImageUploader.uploadImage(image: image, purpose: .profile) { profileImageURL in
 				let data: [String: Any] = ["email" : email,
 										   "username" : username.lowercased(),
 										   "fullname" : fullname,
+                                           "bio": "",
+                                           "location": "",
+                                           "website": "",
+                                           "birthDate": Timestamp(date: birthDate),
 										   "profileImageURL" : profileImageURL,
+                                           "coverImageURL" : "",
 										   "likes" : [String]() ]
 				Firestore.firestore().collection("users")
 					.document(user.uid)

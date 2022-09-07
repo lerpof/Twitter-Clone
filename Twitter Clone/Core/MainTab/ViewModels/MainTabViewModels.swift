@@ -44,7 +44,7 @@ enum MainTabViewModels: Int, CaseIterable {
 		case .feed:
 			return AnyView(FeedView())
 		case .explore:
-			return AnyView(ExploreView())
+            return AnyView(ExploreView(destinationType: .profile))
 		case .notification:
 			return AnyView(NotificationsView())
 		case .message:

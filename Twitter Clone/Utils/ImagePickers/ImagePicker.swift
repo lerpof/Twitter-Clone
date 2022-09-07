@@ -10,10 +10,12 @@ import PhotosUI
 
 struct ImagePicker: UIViewControllerRepresentable {
 	@Binding var image: UIImage?
-	@Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) var presentationMode
+    let shouldEdit: Bool
 
 	func makeUIViewController(context: Context) -> some UIViewController {
 		let picker = UIImagePickerController()
+        picker.allowsEditing = shouldEdit
 		picker.delegate = context.coordinator
 		return picker
 	}
@@ -36,9 +38,9 @@ extension ImagePicker {
 		}
 		
 		func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-			guard let image = info[.originalImage] as? UIImage else { return }
-			parent.image = image
-			parent.presentationMode.wrappedValue.dismiss()
+            guard let image = (parent.shouldEdit ? info[.editedImage] : info[.originalImage]) as? UIImage else { return }
+            parent.image = image
+            parent.presentationMode.wrappedValue.dismiss()
 		}
 
 		

@@ -27,32 +27,49 @@ struct TweetRowView: View {
 		if let user = tweet.user {
 			VStack(alignment: .leading, spacing: 30){
 				HStack(alignment: .top, spacing: 12) {
-					NavigationButton(showNextView: $showProfileView) {
-						UserProfileImageView(url: user.profileImageURL)
-							.frame(width: 46, height: 46)
-					} destination: {
-						ProfileView(user: user)
-					}
-					
-					NavigationButton(showNextView: $showTweetView) {
-						VStack(alignment: .leading) {
-							HStack {
-								Text(user.fullname)
-									.fontWeight(.bold)
-									.font(.subheadline)
-								Text("@\(user.username) • \(tweet.timestamp.seconds / 604800)w")
-									.font(.caption)
-									.foregroundColor(.gray)
-							}
-							Text(tweet.caption)
-								.multilineTextAlignment(.leading)
-								.font(.body)
-						}
-						.foregroundColor(.primary)
-					} destination: {
-						TweetView(tweet)
-					}
-					// TODO: fix week counter
+                    
+                    // PROFILE IMAGE NAVIGATION LINK
+                    NavigationLink {
+                        GeometryReader { proxy in
+                            ProfileView(user: user, topEdge: proxy.safeAreaInsets.top)
+                                .navigationBarHidden(true)
+                        }
+                    } label: {
+                        UserProfileImageView(url: user.profileImageURL)
+                            .frame(width: 46, height: 46)
+                    }
+
+                    
+                    VStack(alignment: .leading) {
+                        
+                        // NAME AND USERNAME NAVIGATION LINK
+                        NavigationLink {
+                            GeometryReader { proxy in
+                                ProfileView(user: user, topEdge: proxy.safeAreaInsets.top)
+                                    .navigationBarHidden(true)
+                            }
+                        } label: {
+                            HStack {
+                                Text(user.fullname)
+                                    .fontWeight(.bold)
+                                    .font(.subheadline)
+                                Text("@\(user.username) • \(tweet.timestamp.dateValue().offsetFromNow)")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        
+                        // TWEET CONTENT NAVIGATION LINK
+                        NavigationLink {
+                            TweetView(tweet)
+                                .navigationBarHidden(true)
+                        } label: {
+                            Text(tweet.caption)
+                                .multilineTextAlignment(.leading)
+                                .font(.body)
+                        }
+                    }
+                    .foregroundColor(.primary)
 					
 				}
 				TweetInteractionButtons(tweet)

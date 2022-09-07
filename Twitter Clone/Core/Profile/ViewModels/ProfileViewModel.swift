@@ -12,15 +12,16 @@ class ProfileViewModel: ObservableObject {
 	@Published var tweets: [Tweet] = []
 	private let tweetService = TweetService()
 	private let userService = UserService()
-	private let messageService = MessageService()
-	private let user: User
+	private let messageService = ChatService()
+    private let userID: String
+    private(set) var user: User?
 	
-	init(user: User) {
-		self.user = user
-		self.fetchTweets(tweetFilter: .tweets)
+	init(userID: String) {
+		self.userID = userID
+        self.refreshUser()
 	}
 	
-	func fetchTweets(tweetFilter: TweetFilterViewModel) {
+    func fetchTweets(tweetFilter: TweetFilterViewModel) {
 		switch tweetFilter {
 		case .tweets:
 			tweetService.fetchTweets(forUser: user) { tweets in
@@ -29,7 +30,7 @@ class ProfileViewModel: ObservableObject {
 		case .replies:
 			print("DEBUG: replies filter")
 		case .likes:
-			tweetService.fetchLikes(forUser: user) { tweets in
+			tweetService.fetchLikes(withUserID: userID) { tweets in
 				self.tweets = tweets
 				for i in 0 ..< self.tweets.count {
 					self.userService.fetchUser(withUid: self.tweets[i].uid) { user in
@@ -39,5 +40,12 @@ class ProfileViewModel: ObservableObject {
 			}
 		}
 	}
+    
+    func refreshUser() {
+        userService.fetchUser(withUid: userID) { user in
+            self.user = user
+            self.fetchTweets(tweetFilter: .tweets)
+        }
+    }
 	
 }

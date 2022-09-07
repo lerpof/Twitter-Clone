@@ -23,7 +23,7 @@ struct NavBarWithBack<Title: View>: View {
 			} label: {
 				Image(systemName: "arrow.left")
 					.resizable()
-					.frame(width: 23, height: 23)
+					.frame(width: 15, height: 15)
 					.foregroundColor(.primary)
 			}
 		} titleView: {
@@ -31,7 +31,7 @@ struct NavBarWithBack<Title: View>: View {
 				.font(.headline)
 		} trailingView: {
 			Spacer()
-				.frame(width: 23, height: 23)
+				.frame(width: 15, height: 15)
 		}
     }
 }

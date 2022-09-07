@@ -55,20 +55,20 @@ struct TweetService {
 		
 	}
 	
-	func fetchLikes(forUser user: User, completion: @escaping ([Tweet]) -> Void) {
-		Firestore.firestore().collection("users").document(user.id!)
-			.getDocument { snapshot, error in
-				if error != nil {
-					print("DEBUG: error fetch likes")
-					return
-				}
-				guard let snapshot = snapshot else { return }
-				let user = try! snapshot.data(as: User.self)
-				fetchTweets { tweets in
-					let likedTweets = tweets.filter { user.likes.contains($0.id!) }
-					completion(likedTweets)
-				}
-			}
+	func fetchLikes(withUserID id: String, completion: @escaping ([Tweet]) -> Void) {
+        Firestore.firestore().collection("users").document(id)
+            .getDocument { snapshot, error in
+                if error != nil {
+                    print("DEBUG: error fetch likes")
+                    return
+                }
+                guard let snapshot = snapshot else { return }
+                let user = try! snapshot.data(as: User.self)
+                fetchTweets { tweets in
+                    let likedTweets = tweets.filter { user.likes.contains($0.id!) }
+                    completion(likedTweets)
+                }
+            }
 	}
 	
 	func likeTweet(_ tweet: Tweet) {

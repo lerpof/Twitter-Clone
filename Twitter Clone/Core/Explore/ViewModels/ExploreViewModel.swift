@@ -11,6 +11,7 @@ class ExploreViewModel: ObservableObject {
 	
 	@Published var users = [User]()
 	@Published var searchText = ""
+    @Published var selectedUser: User? = nil
 	
 	var searchableUsers: [User] {
 		if searchText.isEmpty {

@@ -15,14 +15,21 @@ struct SideMenuView: View {
 	var body: some View {
 		if let user = viewModel.currentUser {
 			VStack(alignment: .leading) {
-				UserProfileImageView(url: user.profileImageURL)
-					.frame(width: 50, height: 50)
-				Text(user.fullname)
-					.font(.headline)
-					.fontWeight(.semibold)
-				Text("@\(user.username)")
-					.font(.subheadline)
-					.foregroundColor(.primary.opacity(0.5))
+                Button {
+                    showProfileView.toggle()
+                } label: {
+                    VStack(alignment: .leading) {
+                        UserProfileImageView(url: user.profileImageURL)
+                            .frame(width: 50, height: 50)
+                        Text(user.fullname)
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                        Text("@\(user.username)")
+                            .font(.subheadline)
+                            .foregroundColor(.primary.opacity(0.5))
+                    }
+                }
 				ProfileFollowView()
 					.padding(.vertical)
 				ForEach(SideMenuViewModel.allCases, id: \.rawValue) { sideMenuOption in

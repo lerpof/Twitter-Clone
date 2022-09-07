@@ -5,16 +5,16 @@
 //  Created by Leonardo Lazzari on 28/04/22.
 //
 
-import Firebase
+import FirebaseStorage
 import UIKit
 
 struct ImageUploader {
 	
-	static func uploadImage(image: UIImage, completion: @escaping(String) -> Void) {
+    static func uploadImage(image: UIImage, purpose: UserImageType, completion: @escaping(String) -> Void) {
 		guard let imageData = image.jpegData(compressionQuality: 0.5) else { return }
 		
 		let filename = NSUUID().uuidString
-		let ref = Storage.storage().reference(withPath: "/profile_image/\(filename).jpg")
+        let ref = Storage.storage().reference(withPath: "/\(purpose.folderName)/\(filename).jpg")
 		
 		ref.putData(imageData, metadata: nil) { _, error in
 			if let error = error {
@@ -29,4 +29,18 @@ struct ImageUploader {
 		}
 	}
 	
+}
+
+enum UserImageType {
+    case profile
+    case cover
+    
+    var folderName: String {
+        switch self {
+            case .profile:
+                return "profile_image"
+            case .cover:
+                return "cover_image"
+        }
+    }
 }

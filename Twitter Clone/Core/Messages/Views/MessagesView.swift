@@ -9,28 +9,61 @@ import SwiftUI
 
 struct MessagesView: View {
 	
-	@ObservedObject var messageViewModel: MessagesViewModel
-	
-	init() {
-		messageViewModel = MessagesViewModel()
-	}
+	@StateObject var messageViewModel = MessagesViewModel()
+    @State var showUsersList = false
+    
+    @State var goToChat = false
 	
     var body: some View {
-		ScrollViewReader { value in
-			ScrollView {
-				ForEach(messageViewModel.chats, id: \.id) { chat in
-					ChatRowView(chat: chat)
-						.id(chat.id)
-					Divider()
-				}
-			}
-			.onAppear {
-				value.scrollTo(messageViewModel.chats.first?.id!)
-			}
-			.onChange(of: messageViewModel.chats.count) { _ in
-				value.scrollTo(messageViewModel.chats.first?.id!)
-			}
-		}
+        ZStack(alignment: .bottomTrailing) {
+            VStack {
+                SearchBarView(text: $messageViewModel.searchBarText)
+                    .padding()
+                Spacer()
+                ScrollViewReader { value in
+                    ScrollView {
+                        ForEach(messageViewModel.searchableChat, id: \.id) { chat in
+                            ChatRowView(chat: chat)
+                                .id(chat.id)
+                            Divider()
+                        }
+                    }
+                    .onAppear {
+                        value.scrollTo(messageViewModel.chats.first?.id!)
+                    }
+                    .onChange(of: messageViewModel.chats.count) { _ in
+                        value.scrollTo(messageViewModel.chats.first?.id!)
+                    }
+                }
+            }
+            Button {
+                showUsersList.toggle()
+            } label: {
+                Image(systemName: "pencil")
+                    .font(.title)
+                    .padding()
+            }
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .clipShape(Circle())
+            .padding()
+            
+            if let recipient = messageViewModel.selectedUser {
+                NavigationLink(isActive: $goToChat) {
+                    ChatView(recipient: recipient)
+                        .navigationBarHidden(true)
+                } label: {
+                    EmptyView()
+                }
+            }
+        }
+        .sheet(isPresented: $showUsersList, onDismiss: {
+            goToChat = messageViewModel.selectedUser != nil
+        }, content: {
+            ExploreView(destinationType: .chat)
+                .environmentObject(messageViewModel)
+                .navigationBarHidden(true)
+        })
     }
 }
 

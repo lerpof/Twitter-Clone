@@ -12,11 +12,10 @@ struct Chat: Identifiable, Decodable {
 	
 	@DocumentID var id: String?
 	
-	let participants: [String]
+	let participants: [String] 
 	let lastMessageID: String
 	
 	var lastMessage: Message?
 	var recipient: User?
-	var messages: [Message]! = []
 	
 }

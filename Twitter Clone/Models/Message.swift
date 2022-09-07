@@ -13,7 +13,6 @@ struct Message: Identifiable, Decodable, Hashable {
 	@DocumentID var id: String?
 	
 	let body: String
-	let recipient: String
 	let sender: String
 	let timestamp: Timestamp
 	

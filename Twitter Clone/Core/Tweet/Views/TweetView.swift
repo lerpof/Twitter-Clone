@@ -44,7 +44,7 @@ struct TweetView: View {
 						Text(tweet.caption)
 							.multilineTextAlignment(.leading)
 							.font(.body)
-							.padding(.vertical)
+                            .padding(.bottom)
 						TweetInteractionButtons(tweet)
 							.padding(.horizontal)
 						Spacer()
@@ -52,6 +52,7 @@ struct TweetView: View {
 				}
 				.padding(.horizontal, 16)
 			}
+            .padding(.top)
 		}
     }
 }

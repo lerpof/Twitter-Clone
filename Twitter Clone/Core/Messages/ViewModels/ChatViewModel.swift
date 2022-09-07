@@ -9,30 +9,37 @@ import Foundation
 
 class ChatViewModel: ObservableObject {
 	
-	@Published var chat: Chat?
-	@Published var messageText: String = ""
+    @Published var messages = [Message]()
+    var recipient: User
+    var chat: Chat?
+    
+	let chatService = ChatService()
+    let messageService = MessageService()
+    
+    init(with recipient: User) {
+        self.recipient = recipient
+        chatService.fetchChat(with: recipient) { chat in
+            self.chat = chat
+            self.fetchMessages()
+        }
+    }
 	
-	let userService = UserService()
-	let messageService = MessageService()
-	
-	init(with user: User) {
-		fetchChat(with: user)
+    func sendMessage(with body: String, completion: @escaping (Bool) -> ()) {
+        if let chat = chat {
+            messageService.sendMessage(in: chat, with: body) { messageID in
+                self.chatService.updateChat(chat, with: ["lastMessageID": messageID])
+                completion(true)
+            }
+        }
 	}
-	
-	func fetchChat(with user: User) {
-		messageService.createChat(with: user) { chat in
-			self.chat = chat
-			self.chat!.recipient = user
-			self.messageService.addListener(to: self.chat!) { message in
-				self.chat!.messages.insert(message, at: 0)
-			}
-		}
-	}
-	
-	func sendMessage(with body: String, completion: @escaping (Bool) -> ()) {
-		messageService.sendMessage(in: chat!, with: body) { successfullySent in
-			completion(successfullySent)
-		}
-	}
+    
+    func fetchMessages() {
+        if let chat = chat {
+            messageService.addListener(to: chat) { message in
+                self.messages.insert(message, at: 0)
+            }
+        }
+    }
+
 	
 }

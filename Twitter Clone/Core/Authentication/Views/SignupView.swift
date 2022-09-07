@@ -13,7 +13,9 @@ struct SignupView: View {
 	@State private var password: String = ""
 	@State private var fullname: String = ""
 	@State private var username: String = ""
+    @State private var birthDate: Date = Date()
 	
+    @State private var showingImageCropper = false
 	@State private var showingImagePicker = false
 	@State private var image: Image?
 	@State private var imageChoosed: UIImage?
@@ -75,12 +77,17 @@ struct SignupView: View {
 				
 				Spacer()
 					.frame(minHeight: 20, maxHeight: 35)
+                
+                DatePicker(selection: $birthDate, in: ...Date(), displayedComponents: .date) {
+                    Text("Birth date")
+                }
 				
 				AuthButton(with: "Continue") {
 					viewModel.register(withEmail: email,
 									   password: password,
 									   fullname: fullname,
 									   username: username,
+                                       birthDate: birthDate,
 									   image: imageChoosed ?? UIImage(systemName: "person.circle.fill")!)
 				}
 				
@@ -105,7 +112,7 @@ struct SignupView: View {
 		}
 		.sheet(isPresented: $showingImagePicker,
 			   onDismiss: loadImage) {
-			ImagePicker(image: $imageChoosed)
+			ImagePicker(image: $imageChoosed, shouldEdit: true)
 		}
     }
 	
