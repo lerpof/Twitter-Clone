@@ -51,10 +51,6 @@ struct ProfileView: View {
 	private var isMyProfile: Bool {
         self.profileViewModel.user?.email == viewModel.currentUser?.email
 	}
-	
-    private var user: User {
-        profileViewModel.user!
-    }
     
     // MARK: - function declaration section
     init(userID: String, topEdge: CGFloat) {
@@ -93,76 +89,78 @@ struct ProfileView: View {
 	
     // MARK: - body definition section
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 0) {
-                    
-                    headerView
-                        .zIndex(getHeaderHeigth() > minHeight ? 1 : 2)
+        BaseDataView(with: profileViewModel) {
+            ZStack(alignment: .topLeading) {
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        
+                        headerView
+                            .zIndex(getHeaderHeigth() > minHeight ? 1 : 2)
 
-                    Group {
-                        profileButtons
-                            .zIndex(getHeaderHeigth() > minHeight ? 2 : 1)
-                        
-                        userInfo
-                            .zIndex(0)
-                        
-                        tweetFilterTabs
-                            .zIndex(1)
-                        
-                        ScrollView(.vertical) {
-                            ForEach(profileViewModel.tweets) { tweet in
-                                TweetRowView(tweet)
-                                Divider()
+                        Group {
+                            profileButtons
+                                .zIndex(getHeaderHeigth() > minHeight ? 2 : 1)
+                            
+                            userInfo
+                                .zIndex(0)
+                            
+                            tweetFilterTabs
+                                .zIndex(1)
+                            
+                            ScrollView(.vertical) {
+                                ForEach(profileViewModel.tweets) { tweet in
+                                    TweetRowView(tweet)
+                                    Divider()
+                                }
+                                .background(
+                                    CustomColor.background
+                                        .measureSize(perform: { size in
+                                            tweetsViewHeight = size.height
+                                            print("SIZE: \(tweetsViewHeight)")
+                                        })
+                                )
                             }
-                            .background(
-                                CustomColor.background
-                                    .measureSize(perform: { size in
-                                        tweetsViewHeight = size.height
-                                        print("SIZE: \(tweetsViewHeight)")
-                                    })
-                            )
+                            .zIndex(0)
+                            
+                            
+                            Rectangle()
+                                .fill(Color.clear)
+                                .if(profileViewModel.tweets.count == 0, transform: { view in
+                                    view
+                                        .overlay(alignment: .top) {
+                                            Text("No tweets yet in this section")
+                                                .foregroundColor(CustomColor.ligthGray)
+                                                .offset(y: 60)
+                                        }
+                                })
+                                .frame(
+                                    height: footerHeight
+                                )
+                                
+                                
                         }
-                        .zIndex(0)
-                        
-                        
-                        Rectangle()
-                            .fill(Color.clear)
-                            .if(profileViewModel.tweets.count == 0, transform: { view in
-                                view
-                                    .overlay(alignment: .top) {
-                                        Text("No tweets yet in this section")
-                                            .foregroundColor(CustomColor.ligthGray)
-                                            .offset(y: 60)
-                                    }
-                            })
-                            .frame(
-                                height: footerHeight
-                            )
-                            
-                            
+                        .offset(y: getBodyOffset())
                     }
-                    .offset(y: getBodyOffset())
+                    .modifier(OffsetModifier(offset: $offset))
                 }
-                .modifier(OffsetModifier(offset: $offset))
+                .onChange(of: offset, perform: { _ in
+                    print("ProfileView: offset value: \(offset)")
+                })
+                .coordinateSpace(name: "SCROLL")
+                
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Image(systemName: "arrow.left")
+                        .foregroundColor(.white)
+                        .font(.title2)
+                }
+                .padding(.leading)
+                .padding(.top, topEdge + 20)
             }
-            .onChange(of: offset, perform: { _ in
-                print("ProfileView: offset value: \(offset)")
-            })
-            .coordinateSpace(name: "SCROLL")
-            
-            Button {
-                presentationMode.wrappedValue.dismiss()
-            } label: {
-                Image(systemName: "arrow.left")
-                    .foregroundColor(.white)
-                    .font(.title2)
-            }
-            .padding(.leading)
-            .padding(.top, topEdge + 20)
+            .frame(width: rect.width, height: rect.height)
+            .ignoresSafeArea(.all, edges: .top)
         }
-        .frame(width: rect.width, height: rect.height)
-        .ignoresSafeArea(.all, edges: .top)
     }
     
 }
@@ -179,110 +177,116 @@ extension ProfileView {
 	
 	var profileButtons: some View {
         HStack(alignment: .bottom) {
-            VStack {
+            if let user = profileViewModel.user {
+                VStack {
+                    Spacer()
+                        .frame(minHeight: 0)
+                        .foregroundColor(.yellow)
+                    UserProfileImageView(url: user.profileImageURL)
+                        .overlay(
+                            Circle()
+                                .stroke(lineWidth: 2)
+                                .foregroundColor(Color("background"))
+                        )
+                        .frame(width: getProfileImageDimension(), height: getProfileImageDimension())
+                }
+                .frame(width: 60, height: 60)
+                
                 Spacer()
-                    .frame(minHeight: 0)
-                    .foregroundColor(.yellow)
-                UserProfileImageView(url: user.profileImageURL)
-                    .overlay(
+                
+                Button {
+                    
+                } label: {
+                    ZStack {
+                        Image(systemName: "bell.badge")
+                            .font(.title2)
+                            .foregroundColor(.primary)
                         Circle()
-                            .stroke(lineWidth: 2)
-                            .foregroundColor(Color("background"))
-                    )
-                    .frame(width: getProfileImageDimension(), height: getProfileImageDimension())
-            }
-            .frame(width: 60, height: 60)
-            
-            Spacer()
-            
-			Button {
-				
-			} label: {
-				ZStack {
-					Image(systemName: "bell.badge")
-						.font(.title2)
-						.foregroundColor(.primary)
-					Circle()
-						.stroke()
-						.foregroundColor(.gray)
-				}
-			}
-			.frame(width: 35, height: 30)
-            
-            Button {
-                if isMyProfile {
-                    goToEditProfile.toggle()
-                } else {
-                    goToChat.toggle()
+                            .stroke()
+                            .foregroundColor(.gray)
+                    }
                 }
-            } label: {
-                ZStack {
-                    Text(isMyProfile ? "Edit Profile" : "Message")
-                        .fontWeight(.bold)
-                        .font(.system(size: 14))
-                        .foregroundColor(.primary)
-                    RoundedRectangle(cornerRadius: 22)
-                        .stroke()
-                        .foregroundColor(.gray)
+                .frame(width: 35, height: 30)
+                
+                Button {
+                    if isMyProfile {
+                        goToEditProfile.toggle()
+                    } else {
+                        goToChat.toggle()
+                    }
+                } label: {
+                    ZStack {
+                        Text(isMyProfile ? "Edit Profile" : "Message")
+                            .fontWeight(.bold)
+                            .font(.system(size: 14))
+                            .foregroundColor(.primary)
+                        RoundedRectangle(cornerRadius: 22)
+                            .stroke()
+                            .foregroundColor(.gray)
+                    }
+                    .frame(width: 110, height: 30)
                 }
-                .frame(width: 110, height: 30)
-            }
-            .sheet(isPresented: $goToEditProfile, onDismiss: {
-                profileViewModel.refreshUser()
-            }, content: {
-                EditProfileView(user)
-            })
+                .sheet(isPresented: $goToEditProfile, onDismiss: {
+                    profileViewModel.fetchData()
+                }, content: {
+                    EditProfileView(user)
+                })
 
-            
-            NavigationLink(isActive: $goToChat) {
-                ChatView(recipient: user)
-                    .navigationBarHidden(true)
-            } label: {
-                EmptyView()
-            }
+                
+                if !isMyProfile {
+                    NavigationLink(isActive: $goToChat) {
+                        ChatView(recipient: user)
+                            .navigationBarHidden(true)
+                    } label: {
+                        EmptyView()
+                    }
+                }
 
-		}
+            }
+        }
         .frame(maxHeight: 60)
-		.padding(.horizontal)
-	}
+        .padding(.horizontal)
+    }
 	
 	var userInfo: some View {
-		VStack(alignment: .leading, spacing: 10) {
-			VStack(alignment: .leading) {
-				HStack {
-					Text(user.fullname)
-						.font(.title2)
-						.fontWeight(.bold)
-					Image(systemName: "checkmark.seal.fill")
-						.foregroundColor(.blue)
-				}
-				Text("@\(user.username)")
-					.font(.caption)
-					.foregroundColor(.gray)
-			}
-            if !user.bio.isEmpty {
-                Text(user.bio)
+        VStack(alignment: .leading, spacing: 10) {
+            if let user = profileViewModel.user {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text(user.fullname)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Image(systemName: "checkmark.seal.fill")
+                            .foregroundColor(.blue)
+                    }
+                    Text("@\(user.username)")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+                if !user.bio.isEmpty {
+                    Text(user.bio)
+                }
+                HStack {
+                    if !user.location.isEmpty {
+                        HStack {
+                            Image(systemName: "mappin.and.ellipse")
+                            Text(user.location)
+                                .font(.caption)
+                        }
+                    }
+                    if !user.website.isEmpty {
+                        HStack {
+                            Image(systemName: "link")
+                            Text(user.website)
+                                .font(.caption)
+                        }
+                    }
+                }
+                ProfileFollowView()
             }
-			HStack {
-                if !user.location.isEmpty {
-                    HStack {
-                        Image(systemName: "mappin.and.ellipse")
-                        Text(user.location)
-                            .font(.caption)
-                    }
-                }
-                if !user.website.isEmpty {
-                    HStack {
-                        Image(systemName: "link")
-                        Text(user.website)
-                            .font(.caption)
-                    }
-                }
-			}
-			ProfileFollowView()
-		}
-		.padding(.horizontal)
-	}
+        }
+        .padding(.horizontal)
+    }
 	
 	var tweetFilterTabs: some View {
         GeometryReader { proxy in

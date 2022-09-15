@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct MessagesView: View {
+struct ChatsListView: View {
 	
-	@StateObject var messageViewModel = MessagesViewModel()
+	@StateObject var chatsListViewModel = ChatsListViewModel()
     @State var showUsersList = false
     
     @State var goToChat = false
@@ -17,22 +17,22 @@ struct MessagesView: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             VStack {
-                SearchBarView(text: $messageViewModel.searchBarText)
+                SearchBarView(text: $chatsListViewModel.searchBarText)
                     .padding()
                 Spacer()
                 ScrollViewReader { value in
                     ScrollView {
-                        ForEach(messageViewModel.searchableChat, id: \.id) { chat in
+                        ForEach(chatsListViewModel.searchableChat, id: \.id) { chat in
                             ChatRowView(chat: chat)
                                 .id(chat.id)
                             Divider()
                         }
                     }
                     .onAppear {
-                        value.scrollTo(messageViewModel.chats.first?.id!)
+                        value.scrollTo(chatsListViewModel.chats.first?.id!)
                     }
-                    .onChange(of: messageViewModel.chats.count) { _ in
-                        value.scrollTo(messageViewModel.chats.first?.id!)
+                    .onChange(of: chatsListViewModel.chats.count) { _ in
+                        value.scrollTo(chatsListViewModel.chats.first?.id!)
                     }
                 }
             }
@@ -48,7 +48,7 @@ struct MessagesView: View {
             .clipShape(Circle())
             .padding()
             
-            if let recipient = messageViewModel.selectedUser {
+            if let recipient = chatsListViewModel.selectedUser {
                 NavigationLink(isActive: $goToChat) {
                     ChatView(recipient: recipient)
                         .navigationBarHidden(true)
@@ -58,10 +58,10 @@ struct MessagesView: View {
             }
         }
         .sheet(isPresented: $showUsersList, onDismiss: {
-            goToChat = messageViewModel.selectedUser != nil
+            goToChat = chatsListViewModel.selectedUser != nil
         }, content: {
             ExploreView(destinationType: .chat)
-                .environmentObject(messageViewModel)
+                .environmentObject(chatsListViewModel)
                 .navigationBarHidden(true)
         })
     }
@@ -69,6 +69,6 @@ struct MessagesView: View {
 
 struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
-        MessagesView()
+        ChatsListView()
     }
 }

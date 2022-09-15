@@ -7,7 +7,7 @@
 
 import Firebase
 
-class MessagesViewModel: ObservableObject {
+class ChatsListViewModel: ObservableObject {
 	
 	@Published var chats: [Chat] = []
     
@@ -61,7 +61,7 @@ class MessagesViewModel: ObservableObject {
 				var chatWithRecipient = chat
 				chatWithRecipient.recipient = recipient
                 if !chat.lastMessageID.isEmpty {
-                    self.messageService.fetchMessage(in: chat, with: chat.lastMessageID) { message in
+                    self.messageService.fetchMessage(with: chat.lastMessageID) { message in
                         chatWithRecipient.lastMessage = message
                         completion(chatWithRecipient)
                     }

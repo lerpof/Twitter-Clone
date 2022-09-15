@@ -31,7 +31,7 @@ struct TweetRowView: View {
                     // PROFILE IMAGE NAVIGATION LINK
                     NavigationLink {
                         GeometryReader { proxy in
-                            ProfileView(user: user, topEdge: proxy.safeAreaInsets.top)
+                            ProfileView(userID: user.id!, topEdge: proxy.safeAreaInsets.top)
                                 .navigationBarHidden(true)
                         }
                     } label: {
@@ -45,7 +45,7 @@ struct TweetRowView: View {
                         // NAME AND USERNAME NAVIGATION LINK
                         NavigationLink {
                             GeometryReader { proxy in
-                                ProfileView(user: user, topEdge: proxy.safeAreaInsets.top)
+                                ProfileView(userID: user.id!, topEdge: proxy.safeAreaInsets.top)
                                     .navigationBarHidden(true)
                             }
                         } label: {

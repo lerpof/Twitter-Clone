@@ -10,7 +10,7 @@ import SwiftUI
 struct ExploreView: View {
 	
 	@ObservedObject var viewModel = ExploreViewModel()
-    @EnvironmentObject var messagesViewModel: MessagesViewModel
+    @EnvironmentObject var chatsListViewModel: ChatsListViewModel
     
     @Environment(\.presentationMode) var presentationMode
 
@@ -36,7 +36,7 @@ struct ExploreView: View {
                 if let user = viewModel.selectedUser {
                     AnyView(
                         GeometryReader { proxy in
-                            ProfileView(user: user, topEdge: proxy.safeAreaInsets.top)
+                            ProfileView(userID: user.id!, topEdge: proxy.safeAreaInsets.top)
                                 .navigationBarHidden(true)
                         })
                 }
@@ -53,7 +53,7 @@ struct ExploreView: View {
                 viewModel.selectedUser = user
                 showNextView.toggle()
             case .chat:
-                messagesViewModel.selectedUser = user
+                chatsListViewModel.selectedUser = user
                 presentationMode.wrappedValue.dismiss()
         }
     }

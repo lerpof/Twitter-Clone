@@ -37,8 +37,10 @@ class ChatService {
             .getDocuments(completion: { snapshot, error in
                 if let documents = snapshot?.documents {
                     for document in documents {
-                        let chat = try! document.data(as: Chat.self)
+                        var chat = try! document.data(as: Chat.self)
+                        // TODO: check if this section is the problem for creating a lot of chats
                         if chat.participants.contains(recipient.id!) {
+                            chat.messages = []
                             completion(chat)
                             return
                         }
@@ -52,13 +54,17 @@ class ChatService {
     func createChat(with recipient: User, completion: @escaping (Chat) -> ()) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let participants = [uid, recipient.id!]
+        let messageIDs: [String] = []
         let data: [String: Any] = ["participants": participants,
+                                   "messageIDs": messageIDs,
                                    "lastMessageID": ""]
         let docRef = self.chatsCollectionRef.document()
         docRef.setData(data)
-        let chat = Chat(id: docRef.documentID,
+        var chat = Chat(id: docRef.documentID,
                         participants: participants,
+                        messageIDs: [],
                         lastMessageID: "")
+        chat.messages = []
         completion(chat)
     }
     

@@ -48,7 +48,7 @@ enum MainTabViewModels: Int, CaseIterable {
 		case .notification:
 			return AnyView(NotificationsView())
 		case .message:
-			return AnyView(MessagesView())
+			return AnyView(ChatsListView())
 		}
 	}
 	

@@ -7,16 +7,12 @@
 
 import Foundation
 
-class FeedViewModel: ObservableObject {
+class FeedViewModel: BaseDataViewModel {
 	
 	@Published var tweets: [Tweet] = []
 	
 	let userService = UserService()
 	let tweetService = TweetService()
-	
-	init() {
-		fetchTweets()
-	}
 	
 	func fetchTweets() {
 		tweetService.fetchTweets { tweets in
@@ -26,7 +22,12 @@ class FeedViewModel: ObservableObject {
 					self.tweets[i].user = user
 				}
 			}
+            self.dataFetched = true
 		}
 	}
+    
+    override func fetchData() {
+        fetchTweets()
+    }
 	
 }

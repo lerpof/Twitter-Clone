@@ -7,19 +7,27 @@
 
 import Foundation
 
-class ProfileViewModel: ObservableObject {
+class ProfileViewModel: BaseDataViewModel {
 	
 	@Published var tweets: [Tweet] = []
 	private let tweetService = TweetService()
 	private let userService = UserService()
 	private let messageService = ChatService()
     private let userID: String
-    private(set) var user: User?
+    @Published private(set) var user: User?
 	
 	init(userID: String) {
-		self.userID = userID
-        self.refreshUser()
+        self.userID = userID
+        super.init()
 	}
+    
+    override func fetchData() {
+        userService.fetchUser(withUid: userID) { user in
+            self.user = user
+            self.fetchTweets(tweetFilter: .tweets)
+            self.dataFetched = true
+        }
+    }
 	
     func fetchTweets(tweetFilter: TweetFilterViewModel) {
 		switch tweetFilter {
@@ -40,12 +48,4 @@ class ProfileViewModel: ObservableObject {
 			}
 		}
 	}
-    
-    func refreshUser() {
-        userService.fetchUser(withUid: userID) { user in
-            self.user = user
-            self.fetchTweets(tweetFilter: .tweets)
-        }
-    }
-	
 }

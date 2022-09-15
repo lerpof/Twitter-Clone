@@ -33,19 +33,19 @@ class EditProfileViewModel: ObservableObject {
         if let profileImage = profileImage, let coverImage = coverImage {
             ImageUploader.uploadImage(image: profileImage, purpose: .profile) { profileImageUrl in
                 ImageUploader.uploadImage(image: coverImage, purpose: .cover) { coverImageUrl in
-                    data["coverImageUrl"] = coverImageUrl
-                    data["profileImageUrl"] = profileImageUrl
+                    data["profileImageURL"] = coverImageUrl
+                    data["profileImageURL"] = profileImageUrl
                     self.userService.updateUser(userID: self.user.id!, with: data)
                 }
             }
         } else if let coverImage = coverImage  {
             ImageUploader.uploadImage(image: coverImage, purpose: .cover) { coverImageUrl in
-                data["coverImageUrl"] = coverImageUrl
+                data["profileImageURL"] = coverImageUrl
                 self.userService.updateUser(userID: self.user.id!, with: data)
             }
         } else if let profileImage = profileImage {
             ImageUploader.uploadImage(image: profileImage, purpose: .profile) { profileImageUrl in
-                data["profileImageUrl"] = profileImageUrl
+                data["profileImageURL"] = profileImageUrl
                 self.userService.updateUser(userID: self.user.id!, with: data)
             }
         } else {

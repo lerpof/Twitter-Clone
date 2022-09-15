@@ -10,11 +10,10 @@ import FirebaseFirestoreSwift
 
 class MessageService {
 	
-    private var messagesCollectionRef = Firestore.firestore().collection("message")
+    private var messagesCollectionRef = Firestore.firestore().collection("messages")
 	
-    func fetchMessage(in chat: Chat, with id: String, completion: @escaping (Message) -> ()) {
-        messagesCollectionRef.document(chat.id!).collection("messages")
-            .document(id).getDocument { document, error in
+    func fetchMessage(with id: String, completion: @escaping (Message) -> ()) {
+        messagesCollectionRef.document(id).getDocument { document, error in
 				if let document = document, document.exists {
 					let message = try! document.data(as: Message.self)
 					completion(message)
@@ -29,14 +28,14 @@ class MessageService {
 								   "sender": uid,
 								   "timestamp": Timestamp(date: Date())]
 		
-        let docRef = messagesCollectionRef.document(chat.id!).collection("messages").addDocument(data: data)
+        let docRef = messagesCollectionRef.addDocument(data: data)
         
         completion(docRef.documentID)
 	}
 	
 	func addListener(to chat: Chat,
 					 addCompletion: @escaping (Message) -> (Void)) {
-        messagesCollectionRef.document(chat.id!).collection("messages").addSnapshotListener { snapshot, error in
+        messagesCollectionRef.addSnapshotListener { snapshot, error in
             guard let snapshot = snapshot else {
                 print("Error listening chats for update: \(error?.localizedDescription ?? "No error")")
                 return

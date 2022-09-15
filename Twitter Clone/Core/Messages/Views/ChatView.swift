@@ -20,9 +20,11 @@ struct ChatView: View {
         VStack {
             NavBarWithBack {
                 HStack {
-                    UserProfileImageView(url: chatViewModel.recipient.profileImageURL)
-                        .frame(width: 30, height: 30)
-                    Text(chatViewModel.recipient.fullname)
+                    if let recipient = chatViewModel.chat?.recipient {
+                        UserProfileImageView(url: recipient.profileImageURL)
+                            .frame(width: 30, height: 30)
+                        Text(recipient.fullname)
+                    }
                 }
             }
             
@@ -31,19 +33,22 @@ struct ChatView: View {
             ScrollViewReader { value in
                 ScrollView {
                     VStack {
-                        ForEach(chatViewModel.messages, id: \.id) { message in
-                            SingleMessageView(message: message)
-                                .id(message.id)
-                                .flippedUpsideDown()
+                        if let messages = chatViewModel.chat?.messages {
+                            ForEach(messages, id: \.id) { message in
+                                SingleMessageView(message: message)
+                                    .id(message.id)
+                                    .flippedUpsideDown()
+                            }
                         }
+                        
                     }
                 }
-//                    .onAppear {
-//                        value.scrollTo(messages.first?.id!)
-//                    }
-//                    .onChange(of: messages.count) { _ in
-//                        value.scrollTo(messages.first?.id!)
-//                    }
+                //                    .onAppear {
+                //                        value.scrollTo(messages.first?.id!)
+                //                    }
+                //                    .onChange(of: messages.count) { _ in
+                //                        value.scrollTo(messages.first?.id!)
+                //                    }
             }
             .padding(.horizontal)
             .flippedUpsideDown()
@@ -69,6 +74,10 @@ struct ChatView: View {
             }.padding()
             
         }
+        .onAppear {
+            chatViewModel.fetchData()
+        }
+
     }
 }
 

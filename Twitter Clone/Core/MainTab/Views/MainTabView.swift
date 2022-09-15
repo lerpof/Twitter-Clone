@@ -48,7 +48,7 @@ struct MainTabView: View {
                         
                         NavigationLink(isActive: $showProfileView) {
                             GeometryReader { proxy in
-                                ProfileView(user: user, topEdge: proxy.safeAreaInsets.top)
+                                ProfileView(userID: user.id!, topEdge: proxy.safeAreaInsets.top)
                                     .navigationBarHidden(true)
                             }
                         } label: {

@@ -14,31 +14,27 @@ struct FeedView: View {
 	@State private var showNewTweetView = false
 	
     var body: some View {
-		ZStack(alignment: .bottomTrailing) {
-			TweetsView(feedViewModel.tweets)
-			Button {
-				showNewTweetView.toggle()
-			} label: {
-				Image(systemName: "text.quote")
-					.font(.title)
-					.padding()
-			}
-			.background(Color.blue)
-			.foregroundColor(.white)
-			.clipShape(Circle())
-			.padding()
-		}
-		.sheet(isPresented: $showNewTweetView) {
-			feedViewModel.fetchTweets()
-		} content: {
-			NewTweetView()
-		}
+        BaseDataView(with: feedViewModel) {
+            ZStack(alignment: .bottomTrailing) {
+                TweetsView(feedViewModel.tweets)
+                Button {
+                    showNewTweetView.toggle()
+                } label: {
+                    Image(systemName: "text.quote")
+                        .font(.title)
+                        .padding()
+                }
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .clipShape(Circle())
+                .padding()
+            }
+            .sheet(isPresented: $showNewTweetView) {
+                feedViewModel.fetchTweets()
+            } content: {
+                NewTweetView()
+            }
+        }
 
-    }
-}
-
-struct FeedView_Previews: PreviewProvider {
-    static var previews: some View {
-        FeedView()
     }
 }
